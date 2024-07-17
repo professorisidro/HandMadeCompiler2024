@@ -19,12 +19,14 @@ Especificação da Linguagem
 	VAR
 	INTEGER
 
+## Automato
+![Imagem do Automato](https://github.com/professorisidro/HandMadeCompiler2024/blob/main/Automato_Linguagem.png)
 
 ## Requisitos não funcionais
 	- tem que ler de arquivo a expressão de entrada
 	- linguagem é case-sensitive
 
 ## Legenda do autômato
-  \+   1 ou mais repetições (Fecho positivo)
-  \*   0 ou mais repetições
-  \?   0 ou 1 ocorrência
+- \+   1 ou mais repetições (Fecho positivo)
+- \*   0 ou mais repetições
+- ?   0 ou 1 ocorrência
