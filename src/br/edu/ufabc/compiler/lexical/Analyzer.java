@@ -12,6 +12,8 @@ public class Analyzer {
 
 	private int state;
 	private int position;
+	private int line;
+	private int column;
 	private char content[];
 	private List<String> reservedWords;
 
@@ -21,6 +23,8 @@ public class Analyzer {
 			this.content = strContent.toCharArray();
 			this.state = 0;
 			this.position = 0;
+			this.line = 1;
+			this.column = 0;
 			this.reservedWords = Arrays.asList("BEGIN", "END", "VAR", "PROGRAM", "INTEGER");
 		} catch (IOException ex) {
 			System.err.println("Erro ao ler Arquivo " + filename);
@@ -41,10 +45,13 @@ public class Analyzer {
 				if (isWS(c)) {
 					state = 0;
 				} else if (isOperator(c)) {
+					this.column++;
 					return new Token(Token.OP, String.valueOf(c));
 				} else if (isPonctuation(c)) {
+					this.column++;
 					return new Token(Token.PON, String.valueOf(c));
 				} else if (isColon(c)) {
+					this.column++;
 					strTk += c;
 					state = 3;
 				} else if (isDigit(c)) {
@@ -65,6 +72,7 @@ public class Analyzer {
 					strTk += c;
 				} else if (isOperator(c) || isWS(c) || isPonctuation(c)) {
 					backtrack();
+					this.column += strTk.length();
 					return new Token(Token.NUM, strTk);
 				} else {
 					throw new LexicalException("Malformed Number");
@@ -76,7 +84,8 @@ public class Analyzer {
 					strTk += c;
 				} else if (isOperator(c) || isWS(c) || isPonctuation(c)) {
 					backtrack();
-					if (isReservedWord(strTk)) {
+					this.column += strTk.length();
+					if (isReservedWord(strTk)) {	
 						return new Token(Token.RW, strTk);
 					}
 					return new Token(Token.ID, strTk);
@@ -85,6 +94,7 @@ public class Analyzer {
 			case 3:
 				if (isEqual(c)) {
 					strTk+=c;
+					this.column++;
 					return new Token(Token.ATT, strTk);
 				}
 				else {
@@ -107,6 +117,14 @@ public class Analyzer {
 		return c >= '0' && c <= '9';
 	}
 
+	public int getLine() {
+		return line;
+	}
+
+	public int getColumn() {
+		return column;
+	}
+
 	public boolean isChar(char c) {
 		return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 	}
@@ -120,6 +138,17 @@ public class Analyzer {
 	}
 
 	public boolean isWS(char c) {
+		if (c == ' ') {
+			this.column++;
+		}
+		else if (c == '\t') {
+			this.column += 4;
+		}
+		else if (c == '\n') {
+			this.line ++;
+			this.column = 0;
+		}
+		
 		return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 	}
 	
@@ -139,6 +168,7 @@ public class Analyzer {
 	}
 
 	public void backtrack() {
+		this.column--;
 		position--;
 	}
 
