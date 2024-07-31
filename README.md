@@ -30,3 +30,9 @@ Especificação da Linguagem
 - \+   1 ou mais repetições (Fecho positivo)
 - \*   0 ou mais repetições
 - ?   0 ou 1 ocorrência
+
+# Parser
+
+## Definição das regras sintáticas e de como vamos trabalhar a conversão destas regras para código
+![Imagem da gramatica e das regras]
+(https://github.com/professorisidro/HandMadecompiler2024/blob/main/Gramatica_Grafo.drawio.png)
